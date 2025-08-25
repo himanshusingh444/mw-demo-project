@@ -1,0 +1,27 @@
+replicaCount: 1
+image:
+  repository: ghcr.io/himanshusingh444/dotnet-app
+  tag: latest
+  pullPolicy: IfNotPresent
+  imagePullSecrets:
+    - name: ghcr-secret
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30081
+resources:
+  limits:
+    cpu: "0.3"
+    memory: "256Mi"
+  requests:
+    cpu: "0.1"
+    memory: "128Mi"
+probes:
+  liveness:
+    path: /healthz
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  readiness:
+    path: /healthz
+    initialDelaySeconds: 5
+    periodSeconds: 5

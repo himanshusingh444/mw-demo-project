@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+    environment {
+        ENVIRONMENT = 'dev'
+    }
+    stages {
+        stage('Prepare Environment') {
+            steps {
+                sh "kubectl config set-context --current --namespace=dev"
+            }
+        }
+        stage('Deploy Go App') {
+            steps {
+                script {
+                    try {
+                        sh """
+                        helm upgrade --install go-app helm/go-app \
+                        --values helm/go-app/values-dev.yaml \
+                        --namespace dev
+                        """
+                        echo "Go app deployed to dev"
+                    } catch (Exception e) {
+                        echo "Deployment failed for Go app: ${e.message}"
+                        // Only rollback if release exists
+                        sh "helm list -n dev | grep go-app && helm rollback go-app 1 --namespace dev || echo 'No previous revision to rollback'"
+                        error "Rollback triggered for Go app"
+                    }
+                }
+            }
+        }
+        stage('Deploy .NET App') {
+            steps {
+                script {
+                    try {
+                        sh """
+                        helm upgrade --install dotnet-app helm/dotnet-app \
+                        --values helm/dotnet-app/values-dev.yaml \
+                        --namespace dev
+                        """
+                        echo ".NET app deployed to dev"
+                    } catch (Exception e) {
+                        echo "Deployment failed for .NET app: ${e.message}"
+                        // Only rollback if release exists
+                        sh "helm list -n dev | grep dotnet-app && helm rollback dotnet-app 1 --namespace dev || echo 'No previous revision to rollback'"
+                        error "Rollback triggered for .NET app"
+                    }
+                }
+            }
+        }
+
+    }
+    post {
+        failure {
+            echo "Deployment to dev failed for both applications. Check logs for details."
+        }
+        success {
+            echo "Deployment to dev completed successfully for both applications."
+        }
+    }
+}
