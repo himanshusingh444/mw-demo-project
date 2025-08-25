@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: ghcr.io/himanshusingh444/dotnet-app
+  repository: ghcr.io/himanshusingh444/dotnet-application
   tag: latest
   pullPolicy: IfNotPresent
   imagePullSecrets:

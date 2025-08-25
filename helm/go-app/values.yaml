@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: ghcr.io/himanshusingh444/go-app
+  repository: ghcr.io/himanshusingh444/go-application
   tag: latest
   pullPolicy: IfNotPresent
   imagePullSecrets:
