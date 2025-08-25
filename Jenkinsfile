@@ -54,7 +54,7 @@ pipeline {
         }
         stage('Trigger Deployment') {
             steps {
-                build job: 'deployment-pipeline', parameters: [
+                build job: 'MW-CD-Pipeline', parameters: [
                     string(name: 'ENVIRONMENT', value: 'dev'),
                     string(name: 'APP_TO_DEPLOY', value: 'both')
                 ]
