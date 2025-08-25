@@ -30,16 +30,16 @@ pipeline {
                 stage('Go') {
                     steps {
                         dir('go-app') {
-                            sh 'docker build -t ghcr.io/himanshusingh444/go-app:latest .'
-                            sh 'trivy image --exit-code 0 --no-progress --severity HIGH,CRITICAL ghcr.io/himanshusingh444/go-app:latest'
+                            sh 'docker build -t ghcr.io/himanshusingh444/mw-go-application:latest .'
+                            sh 'trivy image --exit-code 0 --no-progress --severity HIGH,CRITICAL ghcr.io/himanshusingh444/mw-go-application:latest'
                         }
                     }
                 }
                 stage('.NET') {
                     steps {
                         dir('dotnet-app') {
-                            sh 'docker build -t ghcr.io/himanshusingh444/dotnet-app:latest .'
-                            sh 'trivy image --exit-code 0 --no-progress --severity HIGH,CRITICAL ghcr.io/himanshusingh444/dotnet-app:latest'
+                            sh 'docker build -t ghcr.io/himanshusingh444/mw-dotnet-application:latest .'
+                            sh 'trivy image --exit-code 0 --no-progress --severity HIGH,CRITICAL ghcr.io/himanshusingh444/mw-dotnet-application:latest'
                         }
                     }
                 }
@@ -48,8 +48,8 @@ pipeline {
         stage('Push to GHCR') {
             steps {
                 sh 'echo $GITHUB_TOKEN_PSW | docker login ghcr.io -u himanshusingh444 --password-stdin'
-                sh 'docker push ghcr.io/himanshusingh444/go-app:latest'
-                sh 'docker push ghcr.io/himanshusingh444/dotnet-app:latest'
+                sh 'docker push ghcr.io/himanshusingh444/mw-go-application:latest'
+                sh 'docker push ghcr.io/himanshusingh444/mw-dotnet-application:latest'
             }
         }
         stage('Trigger Deployment') {
